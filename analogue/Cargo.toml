@@ -1,5 +1,5 @@
 [package]
-name = "nezumi"
+name = "anytime-analogue"
 version = "0.1.0"
 edition = "2021"
 
@@ -14,9 +14,7 @@ serde_json = "1.0.48"
 
 [package.metadata.deb]
 maintainer = "Jason Morley <support@jbmorley.co.uk>"
-copyright = "1997-2026 Jason Morley, Shawn Leedy"
+copyright = "2025-2026 Jason Morley"
 assets = [
-  ["target/release/nezumi", "usr/bin/", "755"],
-  ["states.json", "/usr/share/nezumi/states.json", "644"],
-  ["frames/*", "/usr/share/nezumi/frames", "644"],
+  ["target/release/anytime-analogue", "usr/bin/", "755"],
 ]
