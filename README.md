@@ -16,4 +16,8 @@ The clock runs Raspberry Pi OS with a small front-end service written in Rust an
 
 ## License
 
-Anytime Clocks and all components are licensed under the MIT License (see [LICENSE](LICENSE)).
+Unless otherwise stated, Anytime Clocks and all components are licensed under the MIT License (see [LICENSE](LICENSE)).
+
+Exceptions:
+
+- `analogue/resources/roboto`—SIL Open Font License (OFL) version 1.1
