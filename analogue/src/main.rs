@@ -19,13 +19,13 @@
 // SOFTWARE.
 
 use chrono::prelude::*;
+use chrono_tz::Tz;
 use clap::Parser;
 use raylib::prelude::*;
 
-use std::sync::{
-    atomic::{AtomicBool, Ordering},
-    Arc,
-};
+use std::{str::FromStr, sync::{
+        Arc, atomic::{AtomicBool, Ordering},
+    }};
 
 const APP_NAME: &str = "Anytime ✕ Analogue";
 
@@ -36,13 +36,14 @@ const DEFAULT_WINDOW_HEIGHT: i32 = 460;
 #[command(version, about)]
 struct Args {
 
-    /// Perform frame and state validation and exit early.
+    /// IANA time zone name to display (e.g., Pacific/Honolulu).
     #[arg(short, long)]
-    validate_only: bool,
+    time_zone: String,
+
 }
 
 fn main() {
-    let _ = Args::parse();
+    let args = Args::parse();
 
     // Set up an atomic boolean to respond to Ctrl + C signals.
     let running = Arc::new(AtomicBool::new(true));
@@ -64,13 +65,15 @@ fn main() {
     let roboto_font = rl.load_font(&thread, "resources/roboto/Roboto-Regular.ttf")
         .expect("failed to load font");
 
+    let time_zone = Tz::from_str(&args.time_zone).expect("Unable to parse time zone");
+
     while !rl.window_should_close() && running.load(Ordering::SeqCst) {
 
         const NAME_SIZE: f32 = 24.0;
         const FONT_SPACING: f32 = 0.0;
 
-        let name = "User";
-        let name_width = roboto_font.measure_text(name, NAME_SIZE, FONT_SPACING);
+        let name = time_zone.to_string();
+        let name_width = roboto_font.measure_text(&name, NAME_SIZE, FONT_SPACING);
 
         let window_width = rl.get_screen_width();
         let window_height = rl.get_screen_height();
@@ -83,7 +86,7 @@ fn main() {
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::new(0, 42, 66, 255));
 
-        let local: DateTime<Local> = Local::now();
+        let now = Utc::now().with_timezone(&time_zone);
 
         let pi_2 = 2 as f32 * PI as f32;
         let rotation = PI as f32 / 2.0;
@@ -113,11 +116,11 @@ fn main() {
             Color::WHITE);
 
         let name_position = Vector2::new(center.y - (name_width.x / 2.0), 340.0);
-        d.draw_text_codepoints(&roboto_font, name, name_position, NAME_SIZE, FONT_SPACING, SECOND_HAND_COLOR);
+        d.draw_text_codepoints(&roboto_font, &name, name_position, NAME_SIZE, FONT_SPACING, SECOND_HAND_COLOR);
 
-        let second = local.second() as f32 + (local.nanosecond() as f32 / 1000000000.0);
-        let minute = local.minute() as f32 + (second / 60.0);
-        let hour = (local.hour() % 12) as f32 + (minute / 60.0);
+        let second = now.second() as f32 + (now.nanosecond() as f32 / 1000000000.0);
+        let minute = now.minute() as f32 + (second / 60.0);
+        let hour = (now.hour() % 12) as f32 + (minute / 60.0);
 
         let hour_angle = (pi_2 / 12.0) * hour - rotation;
         let hour_end = center + Vector2::new(hour_angle.cos(), hour_angle.sin()) * HOUR_HAND_LENGTH;
