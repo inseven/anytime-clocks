@@ -126,6 +126,8 @@ fn main() {
 
         let text_offset: f32 = 312.0;
         draw_text(&args.name, text_offset, SECOND_HAND_COLOR);
+        let day = String::new() + &now.weekday().to_string() + " " + &now.day().to_string();
+        draw_text(&day, text_offset + 30.0, Color::WHITE);
 
         let second = now.second() as f32 + (now.nanosecond() as f32 / 1000000000.0);
         let minute = now.minute() as f32 + (second / 60.0);
