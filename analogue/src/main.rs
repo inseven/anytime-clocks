@@ -118,16 +118,16 @@ fn main() {
             100,
             Color::WHITE);
 
-        let mut draw_text = |text: &str, offset: f32, color: Color| {
+        let mut draw_text = |text: &str, offset: f32, font_size: f32, color: Color| {
             let text_width = roboto_font.measure_text(&text, NAME_SIZE, FONT_SPACING);
             let text_position = Vector2::new(center.y - (text_width.x / 2.0), offset);
-            d.draw_text_codepoints(&roboto_font, &text, text_position, NAME_SIZE, FONT_SPACING, color);
+            d.draw_text_codepoints(&roboto_font, &text, text_position, font_size, FONT_SPACING, color);
         };
 
         let text_offset: f32 = 312.0;
-        draw_text(&args.name, text_offset, SECOND_HAND_COLOR);
+        draw_text(&args.name, text_offset, NAME_SIZE, SECOND_HAND_COLOR);
         let day = String::new() + &now.weekday().to_string() + " " + &now.day().to_string();
-        draw_text(&day, text_offset + 30.0, Color::WHITE);
+        draw_text(&day, text_offset + 30.0, NAME_SIZE, Color::WHITE);
 
         let second = now.second() as f32 + (now.nanosecond() as f32 / 1000000000.0);
         let minute = now.minute() as f32 + (second / 60.0);
