@@ -40,6 +40,10 @@ struct Args {
     #[arg(short, long)]
     time_zone: String,
 
+    /// Clock name.
+    #[arg(short, long)]
+    name: String,
+
 }
 
 fn main() {
@@ -73,7 +77,6 @@ fn main() {
         const FONT_SPACING: f32 = 0.0;
 
         let name = time_zone.to_string();
-        let name_width = roboto_font.measure_text(&name, NAME_SIZE, FONT_SPACING);
 
         let window_width = rl.get_screen_width();
         let window_height = rl.get_screen_height();
@@ -115,8 +118,14 @@ fn main() {
             100,
             Color::WHITE);
 
-        let name_position = Vector2::new(center.y - (name_width.x / 2.0), 340.0);
-        d.draw_text_codepoints(&roboto_font, &name, name_position, NAME_SIZE, FONT_SPACING, SECOND_HAND_COLOR);
+        let mut draw_text = |text: &str, offset: f32, color: Color| {
+            let text_width = roboto_font.measure_text(&text, NAME_SIZE, FONT_SPACING);
+            let text_position = Vector2::new(center.y - (text_width.x / 2.0), offset);
+            d.draw_text_codepoints(&roboto_font, &text, text_position, NAME_SIZE, FONT_SPACING, color);
+        };
+
+        let text_offset: f32 = 312.0;
+        draw_text(&args.name, text_offset, SECOND_HAND_COLOR);
 
         let second = now.second() as f32 + (now.nanosecond() as f32 / 1000000000.0);
         let minute = now.minute() as f32 + (second / 60.0);
