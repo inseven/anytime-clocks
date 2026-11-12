@@ -1,7 +1,7 @@
 [tools]
 
-cmake = "4.4.5"
-gh = "2.103.3"
+cmake = "4.5.0"
+gh = "2.104.0"
 python = "3.15.2"
 rust = "latest"
 uv = "latest"
